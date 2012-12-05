@@ -1454,7 +1454,11 @@ function Group:addChild(child)
     if table.insertElement(self.children, child) then
         child:setParent(self)
         if self.layer then
-            self.layer:insertProp(child)
+            if child.setLayer then
+                child:setLayer(self.layer)
+            else
+                self.layer:insertProp(child)
+            end
         end
     end
 end
@@ -1466,7 +1470,11 @@ function Group:removeChild(child)
     if table.removeElement(self.children, child) then
         child:setParent(nil)
         if self.layer then
-            self.layer:removeProp(child)
+            if child.setLayer then
+                child:setLayer(nil)
+            else
+                self.layer:removeProp(child)
+            end
         end
     end
 end
@@ -1477,7 +1485,11 @@ end
 function Group:setLayer(layer)
     if self.layer then
         for i, v in ipairs(self.children) do
-            self.layer:removeProp(v)
+            if v.setLayer then
+                v:setLayer(nil)
+            else
+                self.layer:removeProp(v)
+            end
         end
     end
 
@@ -1485,7 +1497,11 @@ function Group:setLayer(layer)
 
     if self.layer then
         for i, v in ipairs(self.children) do
-            self.layer:insertProp(v)
+            if v.setLayer then
+              v:setLayer(self.layer)
+            else
+              self.layer:insertProp(v)
+            end
         end
     end
 end
